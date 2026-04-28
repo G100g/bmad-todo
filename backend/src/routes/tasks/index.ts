@@ -2,6 +2,15 @@ import { FastifyInstance } from "fastify";
 import { db } from "../../db/index";
 
 export default async function (fastify: FastifyInstance) {
+  fastify.get("/", async function (_request, reply) {
+    const tasks = db
+      .prepare(
+        "SELECT id, title, completed as isCompleted, created_at as createdAt FROM tasks ORDER BY created_at ASC",
+      )
+      .all();
+    reply.send({ data: tasks });
+  });
+
   fastify.post(
     "/",
     {
@@ -27,14 +36,12 @@ export default async function (fastify: FastifyInstance) {
         .get(info.lastInsertRowid);
 
       if (!newTask) {
-        reply
-          .code(500)
-          .send({
-            error: {
-              code: "INSERT_FAILED",
-              message: "Failed to retrieve created task",
-            },
-          });
+        reply.code(500).send({
+          error: {
+            code: "INSERT_FAILED",
+            message: "Failed to retrieve created task",
+          },
+        });
         return;
       }
 

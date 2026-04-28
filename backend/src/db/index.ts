@@ -30,3 +30,11 @@ export const initDb = () => {
   `;
   db.exec(createTasksTable);
 };
+
+/** Test-only helper: truncate all tables to ensure isolation between test cases. */
+export const clearDb = () => {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("clearDb must not be called in production");
+  }
+  db.exec("DELETE FROM tasks");
+};

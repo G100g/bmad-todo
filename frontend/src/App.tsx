@@ -9,10 +9,12 @@ import { useState } from "react";
 
 const queryClient = new QueryClient();
 
+const API_BASE = "http://localhost:3000";
+
 interface Task {
   id: number;
   title: string;
-  isCompleted: boolean;
+  isCompleted: number;
   createdAt: string;
 }
 
@@ -20,18 +22,19 @@ function TaskApp() {
   const [title, setTitle] = useState("");
   const qc = useQueryClient();
 
-  // For this story we only need to Create, but we'll setup the list to show creation works
-  const { data: tasks = [] } = useQuery<Task[]>({
+  const { data: tasks = [], isError: isTasksError } = useQuery<Task[]>({
     queryKey: ["tasks"],
     queryFn: async () => {
-      // Mock data until read endpoint is done
-      return [];
+      const res = await fetch(`${API_BASE}/tasks`);
+      if (!res.ok) throw new Error("Failed to fetch tasks");
+      const json = await res.json();
+      return json.data as Task[];
     },
   });
 
   const createMutation = useMutation({
     mutationFn: async (newTitle: string) => {
-      const res = await fetch("http://localhost:3000/tasks", {
+      const res = await fetch(`${API_BASE}/tasks`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: newTitle }),
@@ -89,6 +92,12 @@ function TaskApp() {
         </p>
       )}
 
+      {isTasksError && (
+        <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
+          Failed to load tasks. Please refresh the page.
+        </p>
+      )}
+
       <ul className="space-y-3">
         {tasks.length === 0 && (
           <p className="text-zinc-500 italic">No tasks yet.</p>
@@ -106,6 +115,9 @@ function TaskApp() {
               }
             >
               {task.title}
+            </span>
+            <span className="ml-auto text-xs text-zinc-400">
+              {new Date(task.createdAt).toLocaleDateString()}
             </span>
           </li>
         ))}
