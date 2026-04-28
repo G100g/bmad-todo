@@ -1,3 +1,17 @@
 /.agents
 /_bmad
 /docs
+.vscode
+
+node_modules
+dist
+build
+*.log
+*.tmp
+*.env
+.DS_Store
+.idea
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.bak

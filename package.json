@@ -1,0 +1,12 @@
+{
+    "name": "bmad-todo",
+    "version": "1.0.0",
+    "scripts": {
+        "test:e2e": "npx playwright test --config=e2e/playwright.config.ts",
+        "test:e2e:ui": "npx playwright test --ui --config=e2e/playwright.config.ts"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.43.0",
+        "@types/node": "^20.0.0"
+    }
+}
