@@ -14,7 +14,7 @@ const API_BASE = "http://localhost:3000";
 interface Task {
   id: number;
   title: string;
-  isCompleted: number;
+  isCompleted: boolean;
   createdAt: string;
 }
 
@@ -71,6 +71,29 @@ function TaskApp() {
       );
       setEditingId(null);
       setEditTitle("");
+    },
+  });
+
+  const completeMutation = useMutation({
+    mutationFn: async ({
+      id,
+      completed,
+    }: {
+      id: number;
+      completed: boolean;
+    }) => {
+      const res = await fetch(`${API_BASE}/tasks/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed }),
+      });
+      if (!res.ok) throw new Error("Failed to update task");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      qc.setQueryData(["tasks"], (old: Task[] = []) =>
+        old.map((t) => (t.id === data.data.id ? data.data : t)),
+      );
     },
   });
 
@@ -146,6 +169,12 @@ function TaskApp() {
         </p>
       )}
 
+      {completeMutation.isError && (
+        <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
+          Failed to update task status. Please try again.
+        </p>
+      )}
+
       {isTasksError && (
         <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
           Failed to load tasks. Please refresh the page.
@@ -192,6 +221,21 @@ function TaskApp() {
               </form>
             ) : (
               <>
+                <input
+                  type="checkbox"
+                  checked={task.isCompleted}
+                  onChange={() =>
+                    completeMutation.mutate({
+                      id: task.id,
+                      completed: !task.isCompleted,
+                    })
+                  }
+                  disabled={completeMutation.isPending}
+                  aria-label={`Mark "${task.title}" as ${
+                    task.isCompleted ? "incomplete" : "complete"
+                  }`}
+                  className="w-4 h-4 accent-blue-600 cursor-pointer disabled:cursor-not-allowed"
+                />
                 <span
                   className={
                     task.isCompleted

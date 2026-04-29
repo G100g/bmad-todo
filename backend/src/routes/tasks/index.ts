@@ -1,6 +1,11 @@
 import { FastifyInstance } from "fastify";
 import { db } from "../../db/index";
 
+const mapTask = (row: any) => ({
+  ...row,
+  isCompleted: Boolean(row.isCompleted),
+});
+
 export default async function (fastify: FastifyInstance) {
   fastify.get("/", async function (_request, reply) {
     const tasks = db
@@ -8,7 +13,7 @@ export default async function (fastify: FastifyInstance) {
         "SELECT id, title, completed as isCompleted, created_at as createdAt FROM tasks ORDER BY created_at ASC",
       )
       .all();
-    reply.send({ data: tasks });
+    reply.send({ data: tasks.map(mapTask) });
   });
 
   fastify.post(
@@ -45,7 +50,7 @@ export default async function (fastify: FastifyInstance) {
         return;
       }
 
-      reply.code(201).send({ data: newTask });
+      reply.code(201).send({ data: mapTask(newTask) });
     },
   );
 
@@ -62,6 +67,7 @@ export default async function (fastify: FastifyInstance) {
           type: "object",
           properties: {
             title: { type: "string", minLength: 1, maxLength: 500 },
+            completed: { type: "boolean" },
           },
           additionalProperties: false,
         },
@@ -71,14 +77,30 @@ export default async function (fastify: FastifyInstance) {
       // ID 2: Missing authorization checks on PATCH
       // TODO: Implement user authentication and task ownership validation here
       const { id } = request.params as { id: number };
-      const body = request.body as { title?: string } | undefined;
+      const body = request.body as
+        | { title?: string; completed?: boolean }
+        | undefined;
       const title = body?.title;
+      const completed = body?.completed;
 
       try {
         if (title !== undefined) {
           const result = db
             .prepare("UPDATE tasks SET title = ? WHERE id = ?")
             .run(title, id);
+
+          if (result.changes === 0) {
+            reply.code(404).send({
+              error: { code: "NOT_FOUND", message: "Task not found" },
+            });
+            return;
+          }
+        }
+
+        if (completed !== undefined) {
+          const result = db
+            .prepare("UPDATE tasks SET completed = ? WHERE id = ?")
+            .run(completed ? 1 : 0, id);
 
           if (result.changes === 0) {
             reply.code(404).send({
@@ -105,7 +127,7 @@ export default async function (fastify: FastifyInstance) {
           return;
         }
 
-        reply.send({ data: updated });
+        reply.send({ data: mapTask(updated) });
       } catch (e: any) {
         // ID 11: Unhandled database errors in PATCH handler
         fastify.log.error(e);
