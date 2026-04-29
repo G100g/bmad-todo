@@ -51,5 +51,5 @@ development_status:
   3-2-automated-quality-reporting: done
   epic-3-retrospective: optional
   epic-4: in-progress
-  4-1-app-unit-tests-msw: ready-for-dev
+  4-1-app-unit-tests-msw: done
   4-2-e2e-task-management-full-suite: ready-for-dev

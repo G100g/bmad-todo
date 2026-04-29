@@ -36,6 +36,17 @@
 - Fragile ordering assertions in isolation test — low risk given `ORDER BY created_at ASC`; revisit if query order ever changes.
 - Global `deleteMutation.isPending` disables all Delete buttons — consistent with existing codebase mutation pattern; per-task pending state is an improvement for a future UX story.
 
+## Deferred from: code review of 4-1-app-unit-tests-msw (2026-04-29)
+
+- PATCH handler always uses `mockTask` as base — title edits to completed tasks silently reset `isCompleted` to false; no current test exercises this path [frontend/src/mocks/handlers.ts]
+- `completeMutation` singleton disables all checkboxes while any one is in-flight — pre-existing App.tsx design [frontend/src/App.tsx]
+- `deleteMutation` singleton disables all delete buttons while any one is in-flight — pre-existing App.tsx design [frontend/src/App.tsx]
+- `deletedTaskIndex === -1` produces misplaced splice in delete `onError` — pre-existing App.tsx edge case [frontend/src/App.tsx]
+- `editMutation.onError` silently skips rollback when `context.previousTask` is undefined — pre-existing App.tsx edge case [frontend/src/App.tsx]
+- `fetchCount` closure fragile under unexpected background refetches — works in practice in controlled vitest environment [frontend/src/App.test.tsx]
+- `document.activeElement` assertion unreliable in jsdom — works in practice; theoretical jsdom focus model limitation [frontend/src/App.test.tsx]
+- Non-deterministic `createdAt` timestamp in POST handler — no current test compares timestamps [frontend/src/mocks/handlers.ts]
+
 ## Deferred from: code review of 3-1-single-command-orchestration.md (April 29, 2026)
 
 - Dangerous Test Instructions [README.md]: `README.md` documents `npm run test:e2e` for Playwright but the stack mounts `./data:/app/data` to the local filesystem. Running E2E tests against the running Docker stack will mutate the local development database, causing side effects for the developer's manual testing.

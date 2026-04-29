@@ -30,7 +30,7 @@ interface Task {
   isPending?: boolean;
 }
 
-function TaskApp() {
+export function TaskApp() {
   const [title, setTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
