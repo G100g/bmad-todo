@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +22,7 @@ function TaskApp() {
   const [title, setTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const taskInputRef = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
 
   const { data: tasks = [], isError: isTasksError } = useQuery<Task[]>({
@@ -48,10 +49,8 @@ function TaskApp() {
       // Optimistic update or refetch
       qc.setQueryData(["tasks"], (old: Task[] = []) => [...old, data.data]);
       setTitle("");
-      // Defer focus until after React re-renders the input as enabled (isPending → false)
-      setTimeout(() => {
-        document.getElementById("newTask")?.focus();
-      }, 0);
+      // Return focus using ref: React Query runs this before the next render removes the 'disabled' attribute, so setTimeout is needed.
+      setTimeout(() => taskInputRef.current?.focus(), 0);
     },
   });
 
@@ -165,6 +164,7 @@ function TaskApp() {
         <div className="flex flex-col gap-2">
           <input
             id="newTask"
+            ref={taskInputRef}
             data-testid="task-input"
             type="text"
             value={title}

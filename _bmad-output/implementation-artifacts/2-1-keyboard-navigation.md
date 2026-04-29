@@ -1,6 +1,6 @@
 # Story 2.1: Keyboard Navigation
 
-Status: review
+Status: done
 
 ## Story
 
@@ -290,3 +290,10 @@ Claude Sonnet 4.6
 
 - frontend/src/App.tsx
 - e2e/tests/keyboard-navigation.spec.ts
+
+### Review Findings
+
+[x] [Review][Patch] Replace direct DOM manipulation and hacky timeouts with React `useRef` for focus management [frontend/src/App.tsx:68]
+[x] [Review][Patch] Remove naive and misleading CSRF comment [frontend/src/App.tsx:48]
+[x] [Review][Patch] Rename test from "cancel via Escape" to accurately reflect "cancel via Cancel button" [e2e/tests/keyboard-navigation.spec.ts:83]
+[x] [Review][Patch] Replace forbidden `page.click` in the keyboard test cleanup step with actual `.focus()` and `Enter` keystroke [e2e/tests/keyboard-navigation.spec.ts:124]
