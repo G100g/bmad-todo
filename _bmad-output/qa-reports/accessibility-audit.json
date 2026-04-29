@@ -1,8 +1,9 @@
 {
-  "timestamp": "2026-04-29T13:55:32.271Z",
+  "timestamp": "2026-04-29T17:19:49.125Z",
   "url": "http://localhost:5173/",
   "summary": {
     "violations": 0,
+    "criticalViolations": 0,
     "passes": 28,
     "incomplete": 0,
     "passed": true

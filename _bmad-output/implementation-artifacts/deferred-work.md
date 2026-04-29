@@ -1,5 +1,10 @@
 # Deferred Work
 
+## Deferred from: code review of 4-2-e2e-task-management-full-suite (2026-04-29)
+
+- `waitUntil: "networkidle"` documented Playwright antipattern — background polling or any open connection can stall the signal indefinitely; the subsequent `task-input.waitFor` already provides a reliable readiness anchor. Pre-existing risk; current tests pass locally. [e2e/tests/task-management-full-suite.spec.ts:20]
+- Edit input locator uses `taskList` scope instead of row scope — App only allows one item in edit mode at a time, making the broader locator safe in practice. Add `data-testid="task-edit-input"` to the frontend input in a future hardening story to enable strict row-scoped targeting. [e2e/tests/task-management-full-suite.spec.ts:73,82,192,199]
+
 ## Deferred from: code review of 3-2-automated-quality-reporting (2026-04-29)
 
 - **Backend c8 no `--check-coverage` flags** — `npm test` always exits 0 regardless of coverage level; threshold only checked post-hoc by the report script. Pre-existing design choice; acceptable for current workflow. [backend/package.json]
