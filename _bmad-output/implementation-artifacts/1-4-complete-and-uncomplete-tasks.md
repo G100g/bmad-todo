@@ -30,6 +30,17 @@ so that I can track my progress.
     - PATCH `{ completed: true }` on non-existent id → 404 with `error.code === "NOT_FOUND"`
     - PATCH `{ title: "new", completed: true }` (both fields) → 200, both title and `isCompleted` updated
 
+### Review Findings
+
+- [ ] [Review][Patch] Inefficient Backend Updates / Missing Transaction / Race Condition [backend/src/routes/tasks/index.ts] - Separate UPDATE queries instead of one, no transaction boundary, and redundant checks.
+- [ ] [Review][Patch] mapTask 'any' typing & null crash [backend/src/routes/tasks/index.ts] - Uses `any` and crashes on null argument.
+- [ ] [Review][Patch] PATCH empty body non-existent task returns 500 instead of 404 [backend/src/routes/tasks/index.ts]
+- [ ] [Review][Patch] Shallow Error Handling on Frontend [frontend/src/App.tsx] - Drops backend error payload.
+- [ ] [Review][Patch] UI/UX: Missing label for checkbox [frontend/src/App.tsx] - Checkbox doesn't wrap text in `<label>` making click target tiny.
+- [ ] [Review][Patch] Query cache 'old' is undefined initialized as empty array [frontend/src/App.tsx] - `old ? old.map...` sets empty array if undefined.
+- [x] [Review][Defer] No Optimistic UI Updates [frontend/src/App.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Lax Input Validation [backend/src/routes/tasks/index.ts] — deferred, pre-existing
+
 - [x] Task 2: Frontend — Checkbox Toggle (AC: 1)
   - [x] Update `Task` interface in `frontend/src/App.tsx`: change `isCompleted: number` to `isCompleted: boolean`
   - [x] Add `completeMutation` using `PATCH ${API_BASE}/tasks/${id}` with body `{ completed }`. On success, update cache via `qc.setQueryData(["tasks"], (old) => old.map(t => t.id === data.data.id ? data.data : t))`. Follow the exact same mutation pattern as `editMutation`.

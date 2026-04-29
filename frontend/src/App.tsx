@@ -87,12 +87,15 @@ function TaskApp() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ completed }),
       });
-      if (!res.ok) throw new Error("Failed to update task");
+      if (!res.ok) {
+        const errPayload = await res.json().catch(() => ({}));
+        throw new Error(errPayload.error?.message || "Failed to update task");
+      }
       return res.json();
     },
     onSuccess: (data) => {
-      qc.setQueryData(["tasks"], (old: Task[] = []) =>
-        old.map((t) => (t.id === data.data.id ? data.data : t)),
+      qc.setQueryData(["tasks"], (old: Task[] | undefined) =>
+        old ? old.map((t) => (t.id === data.data.id ? data.data : t)) : undefined,
       );
     },
   });
@@ -221,30 +224,32 @@ function TaskApp() {
               </form>
             ) : (
               <>
-                <input
-                  type="checkbox"
-                  checked={task.isCompleted}
-                  onChange={() =>
-                    completeMutation.mutate({
-                      id: task.id,
-                      completed: !task.isCompleted,
-                    })
-                  }
-                  disabled={completeMutation.isPending}
-                  aria-label={`Mark "${task.title}" as ${
-                    task.isCompleted ? "incomplete" : "complete"
-                  }`}
-                  className="w-4 h-4 accent-blue-600 cursor-pointer disabled:cursor-not-allowed"
-                />
-                <span
-                  className={
-                    task.isCompleted
-                      ? "line-through text-zinc-400"
-                      : "text-zinc-800 dark:text-white"
-                  }
-                >
-                  {task.title}
-                </span>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={task.isCompleted}
+                    onChange={() =>
+                      completeMutation.mutate({
+                        id: task.id,
+                        completed: !task.isCompleted,
+                      })
+                    }
+                    disabled={completeMutation.isPending}
+                    aria-label={`Mark "${task.title}" as ${
+                      task.isCompleted ? "incomplete" : "complete"
+                    }`}
+                    className="w-4 h-4 accent-blue-600 cursor-pointer disabled:cursor-not-allowed"
+                  />
+                  <span
+                    className={
+                      task.isCompleted
+                        ? "line-through text-zinc-400"
+                        : "text-zinc-800 dark:text-white"
+                    }
+                  >
+                    {task.title}
+                  </span>
+                </label>
                 <span className="ml-auto text-xs text-zinc-400">
                   {new Date(task.createdAt).toLocaleDateString()}
                 </span>

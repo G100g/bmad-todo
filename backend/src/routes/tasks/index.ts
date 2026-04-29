@@ -1,10 +1,20 @@
 import { FastifyInstance } from "fastify";
 import { db } from "../../db/index";
 
-const mapTask = (row: any) => ({
-  ...row,
-  isCompleted: Boolean(row.isCompleted),
-});
+interface TaskRow {
+  id: number;
+  title: string;
+  isCompleted: number;
+  createdAt: string;
+}
+
+const mapTask = (row: TaskRow | undefined) => {
+  if (!row) return row;
+  return {
+    ...row,
+    isCompleted: Boolean(row.isCompleted),
+  };
+};
 
 export default async function (fastify: FastifyInstance) {
   fastify.get("/", async function (_request, reply) {
@@ -13,7 +23,7 @@ export default async function (fastify: FastifyInstance) {
         "SELECT id, title, completed as isCompleted, created_at as createdAt FROM tasks ORDER BY created_at ASC",
       )
       .all();
-    reply.send({ data: tasks.map(mapTask) });
+    reply.send({ data: tasks.map(t => mapTask(t as TaskRow)) });
   });
 
   fastify.post(
@@ -50,7 +60,7 @@ export default async function (fastify: FastifyInstance) {
         return;
       }
 
-      reply.code(201).send({ data: mapTask(newTask) });
+      reply.code(201).send({ data: mapTask(newTask as TaskRow) });
     },
   );
 
@@ -84,23 +94,24 @@ export default async function (fastify: FastifyInstance) {
       const completed = body?.completed;
 
       try {
-        if (title !== undefined) {
-          const result = db
-            .prepare("UPDATE tasks SET title = ? WHERE id = ?")
-            .run(title, id);
+        if (title !== undefined || completed !== undefined) {
+          const updates: string[] = [];
+          const values: any[] = [];
 
-          if (result.changes === 0) {
-            reply.code(404).send({
-              error: { code: "NOT_FOUND", message: "Task not found" },
-            });
-            return;
+          if (title !== undefined) {
+            updates.push("title = ?");
+            values.push(title);
           }
-        }
-
-        if (completed !== undefined) {
+          if (completed !== undefined) {
+            updates.push("completed = ?");
+            values.push(completed ? 1 : 0);
+          }
+          
+          values.push(id);
+          
           const result = db
-            .prepare("UPDATE tasks SET completed = ? WHERE id = ?")
-            .run(completed ? 1 : 0, id);
+            .prepare(`UPDATE tasks SET ${updates.join(", ")} WHERE id = ?`)
+            .run(...values);
 
           if (result.changes === 0) {
             reply.code(404).send({
@@ -117,17 +128,16 @@ export default async function (fastify: FastifyInstance) {
           .get(id);
 
         if (!updated) {
-          // ID 10: NULL returned after successful UPDATE (race condition / deleted task)
-          reply.code(500).send({
+          reply.code(404).send({
             error: {
-              code: "INTERNAL_ERROR",
-              message: "Failed to fetch updated task",
+              code: "NOT_FOUND",
+              message: "Task not found",
             },
           });
           return;
         }
 
-        reply.send({ data: mapTask(updated) });
+        reply.send({ data: mapTask(updated as TaskRow) });
       } catch (e: any) {
         // ID 11: Unhandled database errors in PATCH handler
         fastify.log.error(e);

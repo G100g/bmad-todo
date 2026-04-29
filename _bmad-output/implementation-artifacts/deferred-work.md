@@ -14,3 +14,8 @@
 - No concurrent edit handling (optimistic locking): Backend has no version checking, optimistic locking, or conflict detection. Simultaneous edits silently overwrite each other without notification. Pre-existing architectural limitation, deferred for future sprint.
 - Missing audit trail and updated_at timestamp: No change logging, no `updated_at` timestamp, no user attribution for modifications. Compliance and debugging nightmare. Pre-existing feature gap, deferred.
 - No retry or error recovery UI: Frontend edit mutation fails silently with generic message. No retry button, exponential backoff, or state recovery. Pre-existing UX limitation, deferred as nice-to-have.
+
+## Deferred from: code review of 1-4-complete-and-uncomplete-tasks.md (2026-04-29)
+
+- No Optimistic UI Updates [frontend/src/App.tsx] — Checkbox locks during request instead of optimistic update.
+- Lax Input Validation [backend/src/routes/tasks/index.ts] — Fastify accepts coerced types for boolean `completed` instead of strict validation.
