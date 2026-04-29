@@ -27,9 +27,15 @@ test.describe("Keyboard Navigation", () => {
     // Click to ensure the browser window has focus before testing keyboard behavior
     await taskInput.click();
     await page.keyboard.type(title);
+    // Register response waiter before pressing Enter to avoid missing a fast response.
+    // We only need the POST to complete — onSuccess fires and queues the setTimeout(focus, 0).
+    // The subsequent invalidateQueries GET refetch re-renders only the task list, not the input.
+    const postDone = page.waitForResponse(
+      (r) => r.url().includes("/tasks") && r.request().method() === "POST",
+    );
     await page.keyboard.press("Enter");
+    await postDone;
 
-    // Wait for task to appear (confirms mutation + onSuccess completed)
     const taskList = page.getByTestId("task-list");
     await expect(taskList).toContainText(title);
 
@@ -45,7 +51,17 @@ test.describe("Keyboard Navigation", () => {
     const taskInput = page.getByTestId("task-input");
     await taskInput.focus();
     await page.keyboard.type(title);
+    // Wait for POST + the GET refetch (from invalidateQueries) so the task has its real ID.
+    // Register response waiters before pressing Enter to avoid missing fast responses.
+    const postDone = page.waitForResponse(
+      (r) => r.url().includes("/tasks") && r.request().method() === "POST",
+    );
+    const getDone = page.waitForResponse(
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
+    );
     await page.keyboard.press("Enter");
+    await postDone;
+    await getDone;
 
     const taskList = page.getByTestId("task-list");
     await expect(taskList).toContainText(title);
@@ -67,7 +83,17 @@ test.describe("Keyboard Navigation", () => {
     const taskInput = page.getByTestId("task-input");
     await taskInput.focus();
     await page.keyboard.type(title);
+    // Wait for POST + the GET refetch (from invalidateQueries) so the task has its real ID.
+    // Register response waiters before pressing Enter to avoid missing fast responses.
+    const postDone = page.waitForResponse(
+      (r) => r.url().includes("/tasks") && r.request().method() === "POST",
+    );
+    const getDone = page.waitForResponse(
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
+    );
     await page.keyboard.press("Enter");
+    await postDone;
+    await getDone;
 
     const taskList = page.getByTestId("task-list");
     await expect(taskList).toContainText(title);
@@ -103,7 +129,17 @@ test.describe("Keyboard Navigation", () => {
     const taskInput = page.getByTestId("task-input");
     await taskInput.focus();
     await page.keyboard.type(title);
+    // Wait for POST + the GET refetch (from invalidateQueries) so the task has its real ID.
+    // Register response waiters before pressing Enter to avoid missing fast responses.
+    const postDone = page.waitForResponse(
+      (r) => r.url().includes("/tasks") && r.request().method() === "POST",
+    );
+    const getDone = page.waitForResponse(
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
+    );
     await page.keyboard.press("Enter");
+    await postDone;
+    await getDone;
 
     const taskList = page.getByTestId("task-list");
     await expect(taskList).toContainText(title);
