@@ -28,3 +28,5 @@
 - Delete error banner never clears — pre-existing pattern across all mutations; add `mutation.reset()` on a future UX polish story.
 - Fragile ordering assertions in isolation test — low risk given `ORDER BY created_at ASC`; revisit if query order ever changes.
 - Global `deleteMutation.isPending` disables all Delete buttons — consistent with existing codebase mutation pattern; per-task pending state is an improvement for a future UX story.
+## Deferred from: code review of 3-1-single-command-orchestration.md (April 29, 2026)
+- Dangerous Test Instructions [README.md]: `README.md` documents `npm run test:e2e` for Playwright but the stack mounts `./data:/app/data` to the local filesystem. Running E2E tests against the running Docker stack will mutate the local development database, causing side effects for the developer's manual testing.
