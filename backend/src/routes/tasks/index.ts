@@ -182,9 +182,22 @@ export default async function (fastify: FastifyInstance) {
           return;
         }
 
-        db.prepare("DELETE FROM tasks WHERE id = ?").run(id);
+        // Map before DELETE so the response payload is captured before the row is gone
+        const mappedTask = mapTask(taskToDelete as TaskRow);
+        const result = db.prepare("DELETE FROM tasks WHERE id = ?").run(id);
 
-        reply.send({ data: mapTask(taskToDelete as TaskRow) });
+        // TOCTOU guard: another request may have deleted the row between SELECT and DELETE
+        if (result.changes === 0) {
+          reply.code(404).send({
+            error: {
+              code: "NOT_FOUND",
+              message: "Task not found",
+            },
+          });
+          return;
+        }
+
+        reply.send({ data: mappedTask });
       } catch (e: any) {
         fastify.log.error(e);
         reply.code(500).send({

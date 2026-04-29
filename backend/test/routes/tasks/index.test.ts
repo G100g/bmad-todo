@@ -353,6 +353,8 @@ test("returns 200 and deleted object when deleting an existing task", async (t) 
   const body = res.json();
   t.equal(body.data.title, "Task to delete");
   t.equal(body.data.id, taskId);
+  t.equal(body.data.isCompleted, false);
+  t.ok(body.data.createdAt);
 });
 
 test("deleted task no longer appears in GET /tasks", async (t) => {
@@ -423,4 +425,41 @@ test("deleting one task does not remove other tasks", async (t) => {
   t.equal(body.data.length, 2);
   t.equal(body.data[0].title, "Task 1");
   t.equal(body.data[1].title, "Task 3");
+});
+
+test("returns 400 when deleting with non-integer ID", async (t) => {
+  clearDb();
+  const app = await build(t as any);
+
+  const res = await app.inject({
+    method: "DELETE",
+    url: "/tasks/abc",
+  });
+
+  t.equal(res.statusCode, 400);
+});
+
+test("returns 404 when deleting an already-deleted task", async (t) => {
+  clearDb();
+  const app = await build(t as any);
+
+  const create = await app.inject({
+    method: "POST",
+    url: "/tasks",
+    payload: { title: "Delete me twice" },
+  });
+  const taskId = create.json().data.id;
+
+  await app.inject({
+    method: "DELETE",
+    url: `/tasks/${taskId}`,
+  });
+
+  const res = await app.inject({
+    method: "DELETE",
+    url: `/tasks/${taskId}`,
+  });
+
+  t.equal(res.statusCode, 404);
+  t.equal(res.json().error.code, "NOT_FOUND");
 });

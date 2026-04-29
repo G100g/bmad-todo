@@ -1,6 +1,6 @@
 # Story 1.5: Delete Task
 
-Status: review
+Status: done
 
 ## Story
 
@@ -189,3 +189,31 @@ Gemini 3.1 Pro (Preview)
 - backend/src/routes/tasks/index.ts
 - backend/test/routes/tasks/index.test.ts
 - frontend/src/App.tsx
+
+### Senior Developer Review (AI)
+
+Review Date: 2026-04-29
+Outcome: Changes Requested
+Action Items: 5 patch, 6 deferred, 5 dismissed
+
+#### Action Items
+
+- [x] [Review][Patch] DELETE handler atomicity — call `mapTask` before DELETE; check `result.changes === 0` for TOCTOU safety [backend/src/routes/tasks/index.ts]
+- [x] [Review][Patch] Cross-mutation guard — Delete button should also disable when `editMutation.isPending` or `completeMutation.isPending` [frontend/src/App.tsx]
+- [x] [Review][Patch] Missing test: `DELETE /tasks/abc` (non-integer ID) should return 400 [backend/test/routes/tasks/index.test.ts]
+- [x] [Review][Patch] Missing test: double-delete same task should return 404 on second call [backend/test/routes/tasks/index.test.ts]
+- [x] [Review][Patch] Success test: add assertions for `isCompleted` and `createdAt` in deletion response [backend/test/routes/tasks/index.test.ts]
+- [x] [Review][Defer] `catch (e: any)` typing — pre-existing pattern in PATCH handler; use `unknown` in a future refactor
+- [x] [Review][Defer] No response schema on DELETE route — pre-existing across all routes
+- [x] [Review][Defer] `additionalProperties: false` absent from params schema — consistent with PATCH handler pattern
+- [x] [Review][Defer] Delete error banner never clears — pre-existing pattern across all mutations in component
+- [x] [Review][Defer] Fragile ordering assertions in isolation test — low risk given `ORDER BY created_at ASC`
+- [x] [Review][Defer] Global `deleteMutation.isPending` disables all Delete buttons — consistent with existing codebase mutation pattern
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][High] DELETE handler atomicity: map task before deleting, check `result.changes === 0` [backend/src/routes/tasks/index.ts]
+- [x] [AI-Review][Med] Cross-mutation guard on Delete button: add `editMutation.isPending || completeMutation.isPending` to disabled prop [frontend/src/App.tsx]
+- [x] [AI-Review][Med] Add test: `DELETE /tasks/abc` returns 400 (schema validation of non-integer ID) [backend/test/routes/tasks/index.test.ts]
+- [x] [AI-Review][Med] Add test: double-delete returns 404 on second attempt [backend/test/routes/tasks/index.test.ts]
+- [x] [AI-Review][Low] Extend success test: assert `isCompleted` and `createdAt` are present in delete response [backend/test/routes/tasks/index.test.ts]

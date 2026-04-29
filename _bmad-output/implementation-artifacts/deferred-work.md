@@ -19,3 +19,12 @@
 
 - No Optimistic UI Updates [frontend/src/App.tsx] — Checkbox locks during request instead of optimistic update.
 - Lax Input Validation [backend/src/routes/tasks/index.ts] — Fastify accepts coerced types for boolean `completed` instead of strict validation.
+
+## Deferred from: code review of 1-5-delete-task.md (2026-04-29)
+
+- `catch (e: any)` in DELETE handler — pre-existing pattern in PATCH handler; replace with `unknown` and narrow in a future cleanup pass.
+- No response schema on DELETE route — pre-existing across all routes; add response schemas in a future hardening story.
+- `additionalProperties: false` absent from params schema on DELETE — consistent with PATCH handler pattern; apply globally in a future hardening story.
+- Delete error banner never clears — pre-existing pattern across all mutations; add `mutation.reset()` on a future UX polish story.
+- Fragile ordering assertions in isolation test — low risk given `ORDER BY created_at ASC`; revisit if query order ever changes.
+- Global `deleteMutation.isPending` disables all Delete buttons — consistent with existing codebase mutation pattern; per-task pending state is an improvement for a future UX story.

@@ -286,7 +286,11 @@ function TaskApp() {
                 </button>
                 <button
                   onClick={() => deleteMutation.mutate(task.id)}
-                  disabled={deleteMutation.isPending}
+                  disabled={
+                    deleteMutation.isPending ||
+                    editMutation.isPending ||
+                    completeMutation.isPending
+                  }
                   className="px-2 py-1 text-xs text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 rounded disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
                   aria-label={`Delete "${task.title}"`}
                 >
