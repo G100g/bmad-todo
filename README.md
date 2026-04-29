@@ -55,3 +55,34 @@ bmad-todo/
 ├── data/            # Persisted SQLite database (mounted into backend container)
 └── docker-compose.yml
 ```
+
+## Quality Reports
+
+Generate a full quality report (coverage, security, accessibility) with a single command:
+
+```bash
+# Docker stack must be running for accessibility checks
+docker compose up -d
+
+npm run quality-report
+```
+
+Reports are saved to `_bmad-output/qa-reports/`:
+
+| Report                     | Description                                     |
+| -------------------------- | ----------------------------------------------- |
+| `quality-report.json`      | Aggregated summary — start here                 |
+| `backend-coverage.json`    | Backend c8 coverage (threshold: 70%)            |
+| `frontend-coverage.json`   | Frontend Vitest coverage (threshold: 70%)       |
+| `e2e-test-report.json`     | Playwright E2E pass/fail summary                |
+| `security-audit.json`      | `npm audit` results (zero Critical/High policy) |
+| `accessibility-audit.json` | axe-core WCAG AA audit results                  |
+
+See [`_bmad-output/qa-reports/README.md`](_bmad-output/qa-reports/README.md) for full details on each report.
+
+### Frontend unit tests
+
+```bash
+cd frontend && npm test          # run tests
+cd frontend && npm run test:coverage  # run with coverage
+```

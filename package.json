@@ -3,9 +3,11 @@
     "version": "1.0.0",
     "scripts": {
         "test:e2e": "npx playwright test --config=e2e/playwright.config.ts",
-        "test:e2e:ui": "npx playwright test --ui --config=e2e/playwright.config.ts"
+        "test:e2e:ui": "npx playwright test --ui --config=e2e/playwright.config.ts",
+        "quality-report": "node scripts/generate-quality-report.js"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.11.2",
         "@playwright/test": "^1.43.0",
         "@tailwindcss/vite": "^4.2.4",
         "@tanstack/react-query": "^5.100.5",

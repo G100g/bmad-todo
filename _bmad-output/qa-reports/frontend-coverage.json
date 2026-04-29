@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-04-29T13:47:52.220Z",
+  "tool": "vitest + @vitest/coverage-v8",
+  "threshold": 70,
+  "passed": false,
+  "note": "App.tsx lacks unit tests; coverage reflects only tested components (Toaster). See docs/test-plan for expansion roadmap.",
+  "summary": {
+    "lines": 2.27,
+    "statements": 2.63,
+    "functions": 2.98,
+    "branches": 2.08
+  },
+  "testResult": {
+    "exitCode": 1,
+    "testsPass": true
+  },
+  "belowThreshold": [
+    "lines: 2.27%",
+    "statements: 2.63%",
+    "functions: 2.98%",
+    "branches: 2.08%"
+  ],
+  "files": [
+    {
+      "file": "frontend/src/App.tsx",
+      "lines": 0,
+      "statements": 0,
+      "functions": 0,
+      "branches": 0
+    },
+    {
+      "file": "frontend/src/components/ui/Toaster.tsx",
+      "lines": 100,
+      "statements": 100,
+      "functions": 100,
+      "branches": 100
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-04-29T13:47:57.951Z",
+  "tool": "npm audit",
+  "policy": "Zero tolerance for Critical or High severity vulnerabilities (NFR7)",
+  "passed": true,
+  "summary": {
+    "totalCritical": 0,
+    "totalHigh": 0,
+    "allContextsPassed": true
+  },
+  "contexts": {
+    "root": {
+      "exitCode": 0,
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    "backend": {
+      "exitCode": 1,
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 0,
+        "moderate": 24,
+        "low": 0,
+        "info": 0,
+        "total": 24
+      },
+      "passed": true
+    },
+    "frontend": {
+      "exitCode": 0,
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0,
+        "total": 0
+      },
+      "passed": true
+    }
+  }
+}

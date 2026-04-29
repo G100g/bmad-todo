@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-04-29T13:47:52.221Z",
+  "tool": "Playwright",
+  "resultsFile": "e2e/playwright-report/results.xml",
+  "summary": {
+    "total": 18,
+    "passed": 18,
+    "failures": 0,
+    "skipped": 0,
+    "passRate": "100%"
+  },
+  "passed": true,
+  "suites": [
+    {
+      "file": "accessibility.spec.ts",
+      "total": 2,
+      "failures": 0,
+      "passed": 2
+    },
+    {
+      "file": "example.spec.ts",
+      "total": 1,
+      "failures": 0,
+      "passed": 1
+    },
+    {
+      "file": "keyboard-navigation.spec.ts",
+      "total": 6,
+      "failures": 0,
+      "passed": 6
+    },
+    {
+      "file": "optimistic-updates.spec.ts",
+      "total": 8,
+      "failures": 0,
+      "passed": 8
+    },
+    {
+      "file": "smoke.spec.ts",
+      "total": 1,
+      "failures": 0,
+      "passed": 1
+    }
+  ],
+  "criticalFlowsCovered": [
+    "FR1 - Create task",
+    "FR6 - Keyboard navigation",
+    "FR2 - View tasks",
+    "FR3 - Edit tasks",
+    "FR4 - Complete tasks",
+    "FR5 - Delete tasks",
+    "FR7 - Optimistic UI updates",
+    "FR8 - Error feedback",
+    "FR9 - Full stack health",
+    "FR10 - Docker orchestration"
+  ]
+}

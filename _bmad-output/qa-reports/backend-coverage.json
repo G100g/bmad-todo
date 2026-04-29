@@ -1,0 +1,68 @@
+{
+  "timestamp": "2026-04-29T13:47:50.658Z",
+  "tool": "c8",
+  "threshold": 70,
+  "passed": true,
+  "summary": {
+    "lines": 87.07,
+    "statements": 87.07,
+    "functions": 100,
+    "branches": 74.35
+  },
+  "testResult": {
+    "exitCode": 0,
+    "testsPass": true
+  },
+  "belowThreshold": [],
+  "files": [
+    {
+      "file": "backend/src/app.ts",
+      "lines": 100,
+      "statements": 100,
+      "functions": 100,
+      "branches": 100
+    },
+    {
+      "file": "backend/src/db/index.ts",
+      "lines": 95,
+      "statements": 95,
+      "functions": 100,
+      "branches": 40
+    },
+    {
+      "file": "backend/src/plugins/sensible.ts",
+      "lines": 100,
+      "statements": 100,
+      "functions": 100,
+      "branches": 100
+    },
+    {
+      "file": "backend/src/plugins/support.ts",
+      "lines": 100,
+      "statements": 100,
+      "functions": 100,
+      "branches": 100
+    },
+    {
+      "file": "backend/src/routes/root.ts",
+      "lines": 85,
+      "statements": 85,
+      "functions": 100,
+      "branches": 75
+    },
+    {
+      "file": "backend/src/routes/example/index.ts",
+      "lines": 100,
+      "statements": 100,
+      "functions": 100,
+      "branches": 100
+    },
+    {
+      "file": "backend/src/routes/tasks/index.ts",
+      "lines": 80.66,
+      "statements": 80.66,
+      "functions": 100,
+      "branches": 75
+    }
+  ]
+}

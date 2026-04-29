@@ -329,7 +329,7 @@ function TaskApp() {
           aria-label="Task list"
         >
           {tasks.length === 0 && (
-            <p className="text-zinc-500 italic">No tasks yet.</p>
+            <li className="text-zinc-500 italic">No tasks yet.</li>
           )}
           {tasks.map((task) => (
             <li
@@ -390,14 +390,14 @@ function TaskApp() {
                     <span
                       className={
                         task.isCompleted
-                          ? "line-through text-zinc-400"
+                          ? "line-through text-zinc-500"
                           : "text-zinc-800 dark:text-white"
                       }
                     >
                       {task.title}
                     </span>
                   </label>
-                  <span className="ml-auto text-xs text-zinc-400">
+                  <span className="ml-auto text-xs text-zinc-500">
                     {task.isPending
                       ? "Saving..."
                       : new Date(task.createdAt).toLocaleDateString()}
@@ -437,7 +437,9 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-zinc-100 dark:bg-zinc-900 py-10 w-full text-left font-sans">
-        <TaskApp />
+        <main>
+          <TaskApp />
+        </main>
       </div>
     </QueryClientProvider>
   );

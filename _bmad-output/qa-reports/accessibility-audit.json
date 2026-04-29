@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-04-29T13:55:32.271Z",
+  "url": "http://localhost:5173/",
+  "summary": {
+    "violations": 0,
+    "passes": 28,
+    "incomplete": 0,
+    "passed": true
+  },
+  "violations": [],
+  "wcagTags": [
+    "wcag2a",
+    "wcag2aa",
+    "best-practice"
+  ],
+  "threshold": "zero violations"
+}

@@ -1,5 +1,12 @@
 # Deferred Work
 
+## Deferred from: code review of 3-2-automated-quality-reporting (2026-04-29)
+
+- **Backend c8 no `--check-coverage` flags** — `npm test` always exits 0 regardless of coverage level; threshold only checked post-hoc by the report script. Pre-existing design choice; acceptable for current workflow. [backend/package.json]
+- **Path separator hardcoded as `/`** — File path stripping uses `file.replace(ROOT + "/", "")` which breaks on Windows. Project is macOS/Linux-only; no Windows CI requirement. [scripts/generate-quality-report.js]
+- **Hardcoded `curl` liveness check on fixed port** — Port and `curl` availability are not configurable; works for current dev/CI environment but is not portable. [scripts/generate-quality-report.js]
+- **No automated test confirming all report files produced** — Story Task 8 explicitly allows "manual validation"; reports were validated manually during implementation. [scripts/generate-quality-report.js]
+
 ## Deferred from: code review of 1-2-view-task-list (2026-04-28)
 
 - No response schema on `GET /tasks` route — pre-existing pattern, response schemas not used anywhere
@@ -28,5 +35,7 @@
 - Delete error banner never clears — pre-existing pattern across all mutations; add `mutation.reset()` on a future UX polish story.
 - Fragile ordering assertions in isolation test — low risk given `ORDER BY created_at ASC`; revisit if query order ever changes.
 - Global `deleteMutation.isPending` disables all Delete buttons — consistent with existing codebase mutation pattern; per-task pending state is an improvement for a future UX story.
+
 ## Deferred from: code review of 3-1-single-command-orchestration.md (April 29, 2026)
+
 - Dangerous Test Instructions [README.md]: `README.md` documents `npm run test:e2e` for Playwright but the stack mounts `./data:/app/data` to the local filesystem. Running E2E tests against the running Docker stack will mutate the local development database, causing side effects for the developer's manual testing.
