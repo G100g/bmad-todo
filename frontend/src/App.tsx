@@ -101,7 +101,23 @@ function TaskApp() {
       );
     },
   });
-
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`${API_BASE}/tasks/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const errPayload = await res.json().catch(() => ({}));
+        throw new Error(errPayload.error?.message || "Failed to delete task");
+      }
+      return id;
+    },
+    onSuccess: (deletedId) => {
+      qc.setQueryData(["tasks"], (old: Task[] | undefined) =>
+        old ? old.filter((t) => t.id !== deletedId) : undefined,
+      );
+    },
+  });
   const startEdit = (task: Task) => {
     // ID 4: Prevent opening another edit while saving
     if (editMutation.isPending) return;
@@ -177,6 +193,13 @@ function TaskApp() {
       {completeMutation.isError && (
         <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
           Failed to update task status. Please try again.
+        </p>
+      )}
+
+      {deleteMutation.isError && (
+        <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
+          {deleteMutation.error?.message ||
+            "Failed to delete task. Please try again."}
         </p>
       )}
 
@@ -260,6 +283,14 @@ function TaskApp() {
                   className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   Edit
+                </button>
+                <button
+                  onClick={() => deleteMutation.mutate(task.id)}
+                  disabled={deleteMutation.isPending}
+                  className="px-2 py-1 text-xs text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 rounded disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                  aria-label={`Delete "${task.title}"`}
+                >
+                  Delete
                 </button>
               </>
             )}

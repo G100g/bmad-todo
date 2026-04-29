@@ -150,4 +150,50 @@ export default async function (fastify: FastifyInstance) {
       }
     },
   );
+
+  fastify.delete(
+    "/:id",
+    {
+      schema: {
+        params: {
+          type: "object",
+          properties: { id: { type: "integer" } },
+          required: ["id"],
+        },
+      },
+    },
+    async function (request, reply) {
+      const { id } = request.params as { id: number };
+
+      try {
+        const taskToDelete = db
+          .prepare(
+            "SELECT id, title, completed as isCompleted, created_at as createdAt FROM tasks WHERE id = ?",
+          )
+          .get(id);
+
+        if (!taskToDelete) {
+          reply.code(404).send({
+            error: {
+              code: "NOT_FOUND",
+              message: "Task not found",
+            },
+          });
+          return;
+        }
+
+        db.prepare("DELETE FROM tasks WHERE id = ?").run(id);
+
+        reply.send({ data: mapTask(taskToDelete as TaskRow) });
+      } catch (e: any) {
+        fastify.log.error(e);
+        reply.code(500).send({
+          error: {
+            code: "DB_ERROR",
+            message: "Internal server error during delete",
+          },
+        });
+      }
+    },
+  );
 }

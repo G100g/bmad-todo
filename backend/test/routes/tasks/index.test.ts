@@ -332,3 +332,95 @@ test("can update both title and completed in one PATCH", async (t) => {
   t.equal(body.data.title, "Renamed");
   t.equal(body.data.isCompleted, true);
 });
+
+test("returns 200 and deleted object when deleting an existing task", async (t) => {
+  clearDb();
+  const app = await build(t as any);
+
+  const create = await app.inject({
+    method: "POST",
+    url: "/tasks",
+    payload: { title: "Task to delete" },
+  });
+  const taskId = create.json().data.id;
+
+  const res = await app.inject({
+    method: "DELETE",
+    url: `/tasks/${taskId}`,
+  });
+
+  t.equal(res.statusCode, 200);
+  const body = res.json();
+  t.equal(body.data.title, "Task to delete");
+  t.equal(body.data.id, taskId);
+});
+
+test("deleted task no longer appears in GET /tasks", async (t) => {
+  clearDb();
+  const app = await build(t as any);
+
+  const create = await app.inject({
+    method: "POST",
+    url: "/tasks",
+    payload: { title: "Task to vanish" },
+  });
+  const taskId = create.json().data.id;
+
+  await app.inject({
+    method: "DELETE",
+    url: `/tasks/${taskId}`,
+  });
+
+  const res = await app.inject({ method: "GET", url: "/tasks" });
+  t.equal(res.statusCode, 200);
+  t.equal(res.json().data.length, 0);
+});
+
+test("returns 404 when deleting a non-existent task", async (t) => {
+  clearDb();
+  const app = await build(t as any);
+
+  const res = await app.inject({
+    method: "DELETE",
+    url: "/tasks/99999",
+  });
+
+  t.equal(res.statusCode, 404);
+  t.equal(res.json().error.code, "NOT_FOUND");
+});
+
+test("deleting one task does not remove other tasks", async (t) => {
+  clearDb();
+  const app = await build(t as any);
+
+  await app.inject({
+    method: "POST",
+    url: "/tasks",
+    payload: { title: "Task 1" },
+  });
+
+  const create2 = await app.inject({
+    method: "POST",
+    url: "/tasks",
+    payload: { title: "Task 2" },
+  });
+  const task2Id = create2.json().data.id;
+
+  await app.inject({
+    method: "POST",
+    url: "/tasks",
+    payload: { title: "Task 3" },
+  });
+
+  await app.inject({
+    method: "DELETE",
+    url: `/tasks/${task2Id}`,
+  });
+
+  const res = await app.inject({ method: "GET", url: "/tasks" });
+  t.equal(res.statusCode, 200);
+  const body = res.json();
+  t.equal(body.data.length, 2);
+  t.equal(body.data[0].title, "Task 1");
+  t.equal(body.data[1].title, "Task 3");
+});
