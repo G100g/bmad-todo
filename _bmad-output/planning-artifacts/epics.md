@@ -89,6 +89,11 @@ Users of all abilities can interact with the task list using keyboards, and rece
 Evaluators and developers can instantly run the entire stack and review code quality, security, and accessibility metrics.
 **FRs covered:** FR9, FR10, FR11
 
+### Epic 4: Frontend Test Coverage Completeness
+
+Developers and evaluators can confirm the frontend meets the 70% coverage requirement through comprehensive unit tests and a complete E2E task management suite.
+**FRs covered:** NFR1
+
 <!-- End story repeat -->
 
 ## Epic 1: Core Task Lifecycle Management
@@ -214,3 +219,36 @@ So that I can verify the quality and compliance of the complete application.
 **When** I run the designated script or command for quality checks
 **Then** static reports are generated or displayed in the console
 **And** the reports clearly detail test coverage metrics, security vulnerabilities, and accessibility audit results
+
+---
+
+## Epic 4: Frontend Test Coverage Completeness
+
+Developers and evaluators can confirm the frontend meets the 70% coverage requirement through comprehensive unit tests and a complete E2E task management suite.
+
+**FRs covered:** NFR1 (70% coverage threshold)
+
+### Story 4.1: App.tsx Unit Tests with MSW
+
+As a developer,
+I want unit tests for App.tsx covering all task mutations and error paths,
+So that the frontend meets the 70% coverage threshold without relying solely on E2E tests.
+
+**Acceptance Criteria:**
+**Given** MSW (Mock Service Worker) is installed and configured in the Vitest environment
+**When** the unit test suite runs
+**Then** all task mutations (create, edit, complete, delete) are tested for both success and API error paths
+**And** overall frontend coverage meets or exceeds 70% for lines, statements, functions, and branches
+
+### Story 4.2: E2E Task Management Full Suite
+
+As a developer or evaluator,
+I want a comprehensive E2E test suite covering the full task lifecycle with API error scenarios,
+So that all core user flows are validated end-to-end including failure handling.
+
+**Acceptance Criteria:**
+**Given** the application stack is running
+**When** the E2E suite runs
+**Then** it covers create, edit, and delete flows as explicit test cases
+**And** API error interception tests exist for create, edit, and delete operations
+**And** all tests pass
