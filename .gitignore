@@ -16,3 +16,5 @@ data/
 *.sublime-workspace
 *.swp
 *.bak
+playwright-report/
+test-results/

@@ -48,6 +48,10 @@ function TaskApp() {
       // Optimistic update or refetch
       qc.setQueryData(["tasks"], (old: Task[] = []) => [...old, data.data]);
       setTitle("");
+      // Defer focus until after React re-renders the input as enabled (isPending → false)
+      setTimeout(() => {
+        document.getElementById("newTask")?.focus();
+      }, 0);
     },
   });
 
@@ -161,17 +165,18 @@ function TaskApp() {
         <div className="flex flex-col gap-2">
           <input
             id="newTask"
+            data-testid="task-input"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="What needs to be done?"
-            className="flex-1 px-4 py-2 border border-zinc-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
+            className="flex-1 px-4 py-2 border border-zinc-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
             disabled={createMutation.isPending}
           />
           <button
             type="submit"
             disabled={!title.trim() || createMutation.isPending}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Add Task
           </button>
@@ -209,7 +214,7 @@ function TaskApp() {
         </p>
       )}
 
-      <ul className="space-y-3">
+      <ul className="space-y-3" data-testid="task-list" aria-label="Task list">
         {tasks.length === 0 && (
           <p className="text-zinc-500 italic">No tasks yet.</p>
         )}
@@ -228,13 +233,13 @@ function TaskApp() {
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   autoFocus
-                  className="flex-1 px-2 py-1 border border-zinc-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-600 dark:border-zinc-500 dark:text-white"
+                  className="flex-1 px-2 py-1 border border-zinc-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-zinc-600 dark:border-zinc-500 dark:text-white"
                   disabled={editMutation.isPending}
                 />
                 <button
                   type="submit"
                   disabled={!editTitle.trim() || editMutation.isPending}
-                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50"
                 >
                   Save
                 </button>
@@ -242,7 +247,7 @@ function TaskApp() {
                   type="button"
                   onClick={cancelEdit}
                   disabled={editMutation.isPending}
-                  className="px-3 py-1 bg-zinc-200 text-zinc-700 text-sm rounded hover:bg-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:bg-zinc-600 dark:text-zinc-200"
+                  className="px-3 py-1 bg-zinc-200 text-zinc-700 text-sm rounded hover:bg-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:bg-zinc-600 dark:text-zinc-200"
                 >
                   Cancel
                 </button>
@@ -263,7 +268,7 @@ function TaskApp() {
                     aria-label={`Mark "${task.title}" as ${
                       task.isCompleted ? "incomplete" : "complete"
                     }`}
-                    className="w-4 h-4 accent-blue-600 cursor-pointer disabled:cursor-not-allowed"
+                    className="w-4 h-4 accent-blue-600 cursor-pointer disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 rounded-sm"
                   />
                   <span
                     className={
@@ -280,7 +285,7 @@ function TaskApp() {
                 </span>
                 <button
                   onClick={() => startEdit(task)}
-                  className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded dark:text-blue-400 dark:hover:text-blue-300"
+                  className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   Edit
                 </button>
@@ -291,7 +296,7 @@ function TaskApp() {
                     editMutation.isPending ||
                     completeMutation.isPending
                   }
-                  className="px-2 py-1 text-xs text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 rounded disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                  className="px-2 py-1 text-xs text-red-600 hover:text-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
                   aria-label={`Delete "${task.title}"`}
                 >
                   Delete
