@@ -95,7 +95,9 @@ function TaskApp() {
     },
     onSuccess: (data) => {
       qc.setQueryData(["tasks"], (old: Task[] | undefined) =>
-        old ? old.map((t) => (t.id === data.data.id ? data.data : t)) : undefined,
+        old
+          ? old.map((t) => (t.id === data.data.id ? data.data : t))
+          : undefined,
       );
     },
   });

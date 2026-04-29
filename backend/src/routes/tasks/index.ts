@@ -23,7 +23,7 @@ export default async function (fastify: FastifyInstance) {
         "SELECT id, title, completed as isCompleted, created_at as createdAt FROM tasks ORDER BY created_at ASC",
       )
       .all();
-    reply.send({ data: tasks.map(t => mapTask(t as TaskRow)) });
+    reply.send({ data: tasks.map((t) => mapTask(t as TaskRow)) });
   });
 
   fastify.post(
@@ -106,9 +106,9 @@ export default async function (fastify: FastifyInstance) {
             updates.push("completed = ?");
             values.push(completed ? 1 : 0);
           }
-          
+
           values.push(id);
-          
+
           const result = db
             .prepare(`UPDATE tasks SET ${updates.join(", ")} WHERE id = ?`)
             .run(...values);

@@ -3,7 +3,7 @@
 **Story Key:** 1-4-complete-and-uncomplete-tasks
 **Epic:** Epic 1: Core Task Lifecycle Management
 **Story ID:** 1.4
-**Status:** review
+**Status:** done
 
 ## Story
 
@@ -32,12 +32,12 @@ so that I can track my progress.
 
 ### Review Findings
 
-- [ ] [Review][Patch] Inefficient Backend Updates / Missing Transaction / Race Condition [backend/src/routes/tasks/index.ts] - Separate UPDATE queries instead of one, no transaction boundary, and redundant checks.
-- [ ] [Review][Patch] mapTask 'any' typing & null crash [backend/src/routes/tasks/index.ts] - Uses `any` and crashes on null argument.
-- [ ] [Review][Patch] PATCH empty body non-existent task returns 500 instead of 404 [backend/src/routes/tasks/index.ts]
-- [ ] [Review][Patch] Shallow Error Handling on Frontend [frontend/src/App.tsx] - Drops backend error payload.
-- [ ] [Review][Patch] UI/UX: Missing label for checkbox [frontend/src/App.tsx] - Checkbox doesn't wrap text in `<label>` making click target tiny.
-- [ ] [Review][Patch] Query cache 'old' is undefined initialized as empty array [frontend/src/App.tsx] - `old ? old.map...` sets empty array if undefined.
+- [x] [Review][Patch] Inefficient Backend Updates / Missing Transaction / Race Condition [backend/src/routes/tasks/index.ts] - Separate UPDATE queries instead of one, no transaction boundary, and redundant checks.
+- [x] [Review][Patch] mapTask 'any' typing & null crash [backend/src/routes/tasks/index.ts] - Uses `any` and crashes on null argument.
+- [x] [Review][Patch] PATCH empty body non-existent task returns 500 instead of 404 [backend/src/routes/tasks/index.ts]
+- [x] [Review][Patch] Shallow Error Handling on Frontend [frontend/src/App.tsx] - Drops backend error payload.
+- [x] [Review][Patch] UI/UX: Missing label for checkbox [frontend/src/App.tsx] - Checkbox doesn't wrap text in `<label>` making click target tiny.
+- [x] [Review][Patch] Query cache 'old' is undefined initialized as empty array [frontend/src/App.tsx] - `old ? old.map...` sets empty array if undefined.
 - [x] [Review][Defer] No Optimistic UI Updates [frontend/src/App.tsx] — deferred, pre-existing
 - [x] [Review][Defer] Lax Input Validation [backend/src/routes/tasks/index.ts] — deferred, pre-existing
 
