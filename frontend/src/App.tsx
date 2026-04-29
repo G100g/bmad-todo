@@ -20,6 +20,8 @@ interface Task {
 
 function TaskApp() {
   const [title, setTitle] = useState("");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState("");
   const qc = useQueryClient();
 
   const { data: tasks = [], isError: isTasksError } = useQuery<Task[]>({
@@ -49,10 +51,56 @@ function TaskApp() {
     },
   });
 
+  const editMutation = useMutation({
+    mutationFn: async ({ id, title }: { id: number; title: string }) => {
+      const res = await fetch(`${API_BASE}/tasks/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      if (!res.ok) throw new Error("Failed to update task");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      // ID 9: Response structure validation missing
+      if (!data?.data?.id) {
+        throw new Error("Invalid response structure from server");
+      }
+      qc.setQueryData(["tasks"], (old: Task[] = []) =>
+        old.map((t) => (t.id === data.data.id ? data.data : t)),
+      );
+      setEditingId(null);
+      setEditTitle("");
+    },
+  });
+
+  const startEdit = (task: Task) => {
+    // ID 4: Prevent opening another edit while saving
+    if (editMutation.isPending) return;
+    setEditingId(task.id);
+    setEditTitle(task.title);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditTitle("");
+    // ID 12: Stale error state persists after cancel
+    editMutation.reset();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim()) {
       createMutation.mutate(title);
+    }
+  };
+
+  const handleEditSubmit = (e: React.FormEvent, taskId: number) => {
+    e.preventDefault();
+    // ID 4: Prevent concurrent edit submissions
+    if (editMutation.isPending) return;
+    if (editTitle.trim()) {
+      editMutation.mutate({ id: taskId, title: editTitle.trim() });
     }
   };
 
@@ -92,6 +140,12 @@ function TaskApp() {
         </p>
       )}
 
+      {editMutation.isError && (
+        <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
+          Failed to update task. Please try again.
+        </p>
+      )}
+
       {isTasksError && (
         <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
           Failed to load tasks. Please refresh the page.
@@ -107,18 +161,57 @@ function TaskApp() {
             key={task.id}
             className="flex items-center gap-3 p-3 bg-zinc-50 rounded border border-zinc-200 dark:bg-zinc-700 dark:border-zinc-600"
           >
-            <span
-              className={
-                task.isCompleted
-                  ? "line-through text-zinc-400"
-                  : "text-zinc-800 dark:text-white"
-              }
-            >
-              {task.title}
-            </span>
-            <span className="ml-auto text-xs text-zinc-400">
-              {new Date(task.createdAt).toLocaleDateString()}
-            </span>
+            {editingId === task.id ? (
+              <form
+                onSubmit={(e) => handleEditSubmit(e, task.id)}
+                className="flex flex-1 gap-2"
+              >
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  autoFocus
+                  className="flex-1 px-2 py-1 border border-zinc-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-600 dark:border-zinc-500 dark:text-white"
+                  disabled={editMutation.isPending}
+                />
+                <button
+                  type="submit"
+                  disabled={!editTitle.trim() || editMutation.isPending}
+                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  disabled={editMutation.isPending}
+                  className="px-3 py-1 bg-zinc-200 text-zinc-700 text-sm rounded hover:bg-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:bg-zinc-600 dark:text-zinc-200"
+                >
+                  Cancel
+                </button>
+              </form>
+            ) : (
+              <>
+                <span
+                  className={
+                    task.isCompleted
+                      ? "line-through text-zinc-400"
+                      : "text-zinc-800 dark:text-white"
+                  }
+                >
+                  {task.title}
+                </span>
+                <span className="ml-auto text-xs text-zinc-400">
+                  {new Date(task.createdAt).toLocaleDateString()}
+                </span>
+                <button
+                  onClick={() => startEdit(task)}
+                  className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  Edit
+                </button>
+              </>
+            )}
           </li>
         ))}
       </ul>

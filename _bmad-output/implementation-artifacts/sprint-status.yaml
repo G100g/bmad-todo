@@ -1,5 +1,5 @@
-# generated: 2026-04-28
-# last_updated: 2026-04-28
+# generated: 2026-04-29
+# last_updated: 2026-04-29
 # project: bmad-todo
 # project_key: NOKEY
 # tracking_system: file-system
@@ -38,7 +38,7 @@ development_status:
   epic-1: in-progress
   1-1-project-initialization-and-task-creation: done
   1-2-view-task-list: done
-  1-3-edit-existing-task: backlog
+  1-3-edit-existing-task: done
   1-4-complete-and-uncomplete-tasks: backlog
   1-5-delete-task: backlog
   epic-1-retrospective: optional

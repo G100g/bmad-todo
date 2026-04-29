@@ -17,6 +17,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   initDb();
   await fastify.register(cors, {
     origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"], // ID 1
   });
 
   // Do not touch the following lines
