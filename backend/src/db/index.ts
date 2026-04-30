@@ -2,11 +2,15 @@ import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 
+const configuredDbPath = process.env.DB_PATH;
+
 // In-memory strictly for test environments if needed, otherwise local file
 const dbPath =
   process.env.NODE_ENV === "test"
     ? ":memory:"
-    : path.resolve(__dirname, "../../../data/todo.db");
+    : configuredDbPath
+      ? path.resolve(configuredDbPath)
+      : path.resolve(__dirname, "../../../data/todo.db");
 
 // Ensure the data directory exists
 if (process.env.NODE_ENV !== "test") {

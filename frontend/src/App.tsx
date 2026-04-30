@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const API_BASE = "http://localhost:3000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
 
 interface Task {
   id: number;
@@ -219,13 +219,11 @@ export function TaskApp() {
     },
     onError: (_err, _id, context) => {
       if (context?.deletedTask && context.deletedTaskIndex !== undefined) {
+        const deletedTask = context.deletedTask;
+        const deletedTaskIndex = context.deletedTaskIndex;
         qc.setQueryData<Task[]>(["tasks"], (old = []) => {
           const restoredTasks = [...old];
-          restoredTasks.splice(
-            context.deletedTaskIndex,
-            0,
-            context.deletedTask,
-          );
+          restoredTasks.splice(deletedTaskIndex, 0, deletedTask);
           return restoredTasks;
         });
       }

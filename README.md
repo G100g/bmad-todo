@@ -19,7 +19,39 @@ That's it. The entire stack — backend API, SQLite database, and frontend — s
 | Frontend | http://localhost:5173 |
 | Backend  | http://localhost:3000 |
 
-The frontend will only start after the backend is healthy (health-checked via `curl`). Allow 30–60 seconds on first run while Docker builds the images.
+The frontend will only start after the backend is healthy. Allow 30-60 seconds on first run while Docker builds the images.
+
+## Docker Profiles and Environments
+
+The default stack starts optimized runtime containers (`backend` + `frontend`).
+
+Optional profiles:
+
+```bash
+# Frontend Vite dev server on http://localhost:5174
+docker compose --profile dev up
+
+# Test backend container wiring
+docker compose --profile test up backend-test
+```
+
+Environment variables are loaded from your shell or `.env` file. See `.env.example` for supported values.
+
+## Health and Logs
+
+Health endpoints:
+
+- Backend: `GET /health`
+- Frontend container: `GET /healthz`
+
+Useful commands:
+
+```bash
+docker compose ps
+docker compose logs -f
+docker compose logs -f backend
+docker compose logs -f frontend
+```
 
 > **Tip:** If you make frontend changes and they don't appear, Docker layer caching may serve a stale image. Rebuild with:
 >

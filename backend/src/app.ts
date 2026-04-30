@@ -9,6 +9,10 @@ export interface AppOptions
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
 
+const corsOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
+  : ["http://localhost:5173", "http://127.0.0.1:5173"];
+
 const app: FastifyPluginAsync<AppOptions> = async (
   fastify,
   opts,
@@ -16,7 +20,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // Place here your custom code!
   initDb();
   await fastify.register(cors, {
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: corsOrigins,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"], // ID 1
   });
 
