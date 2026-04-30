@@ -13,6 +13,7 @@ RUN npm run build
 
 FROM deps AS dev
 COPY . .
+RUN chown -R node:node /app
 USER node
 EXPOSE 5173
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=20s \
