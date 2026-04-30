@@ -23,7 +23,7 @@ export const db = new Database(dbPath, {
 db.pragma("journal_mode = WAL");
 
 // Simple initialization script
-export const initDb = () => {
+export const initDb = (database: Database.Database = db) => {
   const createTasksTable = `
     CREATE TABLE IF NOT EXISTS tasks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +32,7 @@ export const initDb = () => {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `;
-  db.exec(createTasksTable);
+  database.exec(createTasksTable);
 };
 
 /** Test-only helper: truncate all tables to ensure isolation between test cases. */

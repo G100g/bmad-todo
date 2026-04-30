@@ -1,5 +1,4 @@
 import { FastifyInstance } from "fastify";
-import { db } from "../../db/index";
 
 interface TaskRow {
   id: number;
@@ -17,6 +16,7 @@ const mapTask = (row: TaskRow | undefined) => {
 };
 
 export default async function (fastify: FastifyInstance) {
+  const db = fastify.db;
   fastify.get("/", async function (_request, reply) {
     const tasks = db
       .prepare(

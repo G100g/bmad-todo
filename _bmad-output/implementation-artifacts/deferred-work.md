@@ -1,5 +1,12 @@
 # Deferred Work
 
+## Deferred from: code review of 5-1-integration-test-framework-setup (2026-04-30)
+
+- **Dual test runner architecture** — `backend/package.json` has two test runners: legacy `node --test` (unit tests) and new Vitest (integration tests). They coexist but create maintenance complexity; consolidation is a future cleanup task. Pre-existing design.
+- **Database cleanup only clears tasks table** — `setup.ts` and fixture cleanup hooks only `DELETE FROM tasks`; future tables added to the schema won't be cleaned between tests, risking cross-test contamination. Pre-existing limitation.
+- **Performance test flakiness** — `expect(elapsed).toBeLessThan(500)` assertions in the Performance describe block are environment-dependent and will fail on slow/loaded machines. Required by spec NFR; threshold is lenient (tests run ~20ms) but the risk remains.
+- **Helper error robustness** — `statusCode` validation before comparisons and sanitizing `response.payload` in error messages were flagged but are low-priority test-code quality concerns. Pre-existing pattern.
+
 ## Deferred from: code review of 4-2-e2e-task-management-full-suite (2026-04-29)
 
 - `waitUntil: "networkidle"` documented Playwright antipattern — background polling or any open connection can stall the signal indefinitely; the subsequent `task-input.waitFor` already provides a reliable readiness anchor. Pre-existing risk; current tests pass locally. [e2e/tests/task-management-full-suite.spec.ts:20]

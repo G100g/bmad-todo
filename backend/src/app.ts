@@ -2,10 +2,13 @@ import { join } from "node:path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync, FastifyServerOptions } from "fastify";
 import cors from "@fastify/cors";
-import { initDb } from "./db/index";
+import Database from "better-sqlite3";
+import { db as moduleDb, initDb } from "./db/index";
 
 export interface AppOptions
-  extends FastifyServerOptions, Partial<AutoloadPluginOptions> {}
+  extends FastifyServerOptions, Partial<AutoloadPluginOptions> {
+  db?: Database.Database;
+}
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
 
@@ -18,7 +21,9 @@ const app: FastifyPluginAsync<AppOptions> = async (
   opts,
 ): Promise<void> => {
   // Place here your custom code!
-  initDb();
+  const database = opts.db ?? moduleDb;
+  initDb(database);
+  fastify.decorate("db", database);
   await fastify.register(cors, {
     origin: corsOrigins,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"], // ID 1
@@ -46,3 +51,9 @@ const app: FastifyPluginAsync<AppOptions> = async (
 
 export default app;
 export { app, options };
+
+declare module "fastify" {
+  interface FastifyInstance {
+    db: Database.Database;
+  }
+}

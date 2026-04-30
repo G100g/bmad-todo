@@ -7,7 +7,11 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npm run build:ts && tsc -p test/tsconfig.json && c8 --reporter=text --reporter=json-summary node --test -r ts-node/register \"test/**/*.ts\"",
+    "test": "npm run build:ts && tsc -p test/tsconfig.json && c8 --reporter=text --reporter=json-summary node --test -r ts-node/register \"test/routes/**/*.test.ts\" \"test/plugins/**/*.test.ts\"",
+    "test:integration": "npm run build:ts && vitest run --config vitest.config.ts",
+    "test:integration:watch": "vitest watch --config vitest.config.ts",
+    "test:integration:ui": "vitest --ui --config vitest.config.ts",
+    "test:integration:coverage": "vitest run --coverage --config vitest.config.ts",
     "start": "npm run build:ts && fastify start -l info dist/app.js",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
@@ -30,11 +34,14 @@
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.0.3",
     "@types/tap": "^15.0.12",
+    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/ui": "^4.1.5",
     "c8": "^11.0.0",
     "concurrently": "^9.0.0",
     "fastify-tsconfig": "^3.0.0",
     "tap": "^21.7.1",
     "ts-node": "^10.4.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vitest": "^4.1.5"
   }
 }
