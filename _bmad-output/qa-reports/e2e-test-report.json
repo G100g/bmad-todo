@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-04-30T07:58:54.179Z",
+  "timestamp": "2026-04-30T08:36:48.385Z",
   "tool": "Playwright",
   "resultsFile": "e2e/playwright-report/results.xml",
   "summary": {
-    "total": 18,
-    "passed": 18,
+    "total": 24,
+    "passed": 24,
     "failures": 0,
     "skipped": 0,
     "passRate": "100%"
@@ -40,6 +40,12 @@
       "total": 1,
       "failures": 0,
       "passed": 1
+    },
+    {
+      "file": "task-management-full-suite.spec.ts",
+      "total": 6,
+      "failures": 0,
+      "passed": 6
     }
   ],
   "criticalFlowsCovered": [

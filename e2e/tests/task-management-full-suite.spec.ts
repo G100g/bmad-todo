@@ -36,9 +36,7 @@ test.describe("Task Management Full Suite", () => {
       (r) => r.url().includes("/tasks") && r.request().method() === "POST",
     );
     const getDone = page.waitForResponse(
-      (r) =>
-        new URL(r.url()).pathname === "/tasks" &&
-        r.request().method() === "GET",
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
     );
 
     await page.getByTestId("task-input").fill(title);
@@ -63,9 +61,7 @@ test.describe("Task Management Full Suite", () => {
       (r) => r.url().includes("/tasks") && r.request().method() === "POST",
     );
     const getDone = page.waitForResponse(
-      (r) =>
-        new URL(r.url()).pathname === "/tasks" &&
-        r.request().method() === "GET",
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
     );
     await page.getByTestId("task-input").fill(title);
     await page.getByRole("button", { name: /add task/i }).click();
@@ -107,9 +103,7 @@ test.describe("Task Management Full Suite", () => {
       (r) => r.url().includes("/tasks") && r.request().method() === "POST",
     );
     const getDone = page.waitForResponse(
-      (r) =>
-        new URL(r.url()).pathname === "/tasks" &&
-        r.request().method() === "GET",
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
     );
     await page.getByTestId("task-input").fill(title);
     await page.getByRole("button", { name: /add task/i }).click();
@@ -183,9 +177,7 @@ test.describe("Task Management Full Suite", () => {
       (r) => r.url().includes("/tasks") && r.request().method() === "POST",
     );
     const getDone = page.waitForResponse(
-      (r) =>
-        new URL(r.url()).pathname === "/tasks" &&
-        r.request().method() === "GET",
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
     );
     await page.getByTestId("task-input").fill(title);
     await page.getByRole("button", { name: /add task/i }).click();
@@ -248,9 +240,7 @@ test.describe("Task Management Full Suite", () => {
       (r) => r.url().includes("/tasks") && r.request().method() === "POST",
     );
     const getDone = page.waitForResponse(
-      (r) =>
-        new URL(r.url()).pathname === "/tasks" &&
-        r.request().method() === "GET",
+      (r) => r.url().includes("/tasks") && r.request().method() === "GET",
     );
     await page.getByTestId("task-input").fill(title);
     await page.getByRole("button", { name: /add task/i }).click();

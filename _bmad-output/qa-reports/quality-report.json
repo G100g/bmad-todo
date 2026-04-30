@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-30T07:58:59.959Z",
+  "timestamp": "2026-04-30T08:37:00.268Z",
   "project": "bmad-todo",
   "overallPassed": true,
   "summary": {
@@ -21,7 +21,7 @@
     "e2eTests": {
       "passed": true,
       "passRate": "100%",
-      "total": 18
+      "total": 24
     },
     "security": {
       "passed": true,
