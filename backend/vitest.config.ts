@@ -14,18 +14,14 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./test/setup.ts"],
     pool: "forks", // Use forks to isolate each test
-    poolOptions: {
-      forks: {
-        singleFork: true, // Each test file runs in its own process
-      },
-    },
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html"],
+      reportsDirectory: "./coverage-integration",
+      reporter: ["text", "json", "html", "json-summary"],
+      include: ["dist/**/*.{ts,js}"],
       exclude: [
         "node_modules/",
         "test/",
-        "dist/",
         "**/*.test.ts",
         "**/*.integration.test.ts",
       ],

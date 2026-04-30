@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-30T07:58:51.792Z",
-  "tool": "c8",
+  "timestamp": "2026-04-30T07:58:43.667Z",
+  "tool": "vitest + @vitest/coverage-v8",
   "threshold": 70,
   "passed": true,
   "summary": {
-    "lines": 87.73,
-    "statements": 87.73,
-    "functions": 100,
-    "branches": 70.73
+    "lines": 85.08,
+    "statements": 84.03,
+    "functions": 73.68,
+    "branches": 72.97
   },
   "testResult": {
     "exitCode": 0,
@@ -17,17 +17,17 @@
   "files": [
     {
       "file": "backend/src/app.ts",
-      "lines": 100,
-      "statements": 100,
-      "functions": 100,
+      "lines": 93.75,
+      "statements": 94.11,
+      "functions": 50,
       "branches": 50
     },
     {
       "file": "backend/src/db/index.ts",
-      "lines": 95.45,
-      "statements": 95.45,
+      "lines": 75,
+      "statements": 72.22,
       "functions": 100,
-      "branches": 33.33
+      "branches": 63.63
     },
     {
       "file": "backend/src/plugins/sensible.ts",
@@ -38,31 +38,31 @@
     },
     {
       "file": "backend/src/plugins/support.ts",
-      "lines": 100,
-      "statements": 100,
-      "functions": 100,
+      "lines": 75,
+      "statements": 75,
+      "functions": 50,
       "branches": 100
     },
     {
       "file": "backend/src/routes/root.ts",
-      "lines": 85,
-      "statements": 85,
-      "functions": 100,
-      "branches": 75
+      "lines": 45.45,
+      "statements": 45.45,
+      "functions": 33.33,
+      "branches": 100
     },
     {
       "file": "backend/src/routes/example/index.ts",
-      "lines": 100,
-      "statements": 100,
-      "functions": 100,
+      "lines": 75,
+      "statements": 75,
+      "functions": 50,
       "branches": 100
     },
     {
       "file": "backend/src/routes/tasks/index.ts",
-      "lines": 80.66,
-      "statements": 80.66,
+      "lines": 93.22,
+      "statements": 91.8,
       "functions": 100,
-      "branches": 75
+      "branches": 81.81
     }
   ]
 }

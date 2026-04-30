@@ -1,35 +1,43 @@
 {
-  "timestamp": "2026-04-29T13:47:52.220Z",
+  "timestamp": "2026-04-30T07:58:54.178Z",
   "tool": "vitest + @vitest/coverage-v8",
   "threshold": 70,
-  "passed": false,
-  "note": "App.tsx lacks unit tests; coverage reflects only tested components (Toaster). See docs/test-plan for expansion roadmap.",
+  "passed": true,
   "summary": {
-    "lines": 2.27,
-    "statements": 2.63,
-    "functions": 2.98,
-    "branches": 2.08
+    "lines": 97.24,
+    "statements": 93.93,
+    "functions": 90.14,
+    "branches": 81.37
   },
   "testResult": {
-    "exitCode": 1,
+    "exitCode": 0,
     "testsPass": true
   },
-  "belowThreshold": [
-    "lines: 2.27%",
-    "statements: 2.63%",
-    "functions: 2.98%",
-    "branches: 2.08%"
-  ],
+  "belowThreshold": [],
   "files": [
     {
       "file": "frontend/src/App.tsx",
-      "lines": 0,
-      "statements": 0,
-      "functions": 0,
-      "branches": 0
+      "lines": 98.47,
+      "statements": 94.66,
+      "functions": 90.76,
+      "branches": 80.2
     },
     {
       "file": "frontend/src/components/ui/Toaster.tsx",
+      "lines": 100,
+      "statements": 100,
+      "functions": 100,
+      "branches": 100
+    },
+    {
+      "file": "frontend/src/mocks/handlers.ts",
+      "lines": 80,
+      "statements": 80,
+      "functions": 75,
+      "branches": 100
+    },
+    {
+      "file": "frontend/src/mocks/server.ts",
       "lines": 100,
       "statements": 100,
       "functions": 100,

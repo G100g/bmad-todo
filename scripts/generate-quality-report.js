@@ -56,7 +56,129 @@ function ensureReportsDir() {
   fs.mkdirSync(REPORTS_DIR, { recursive: true });
 }
 
-// ─── Task 1: Backend Coverage ────────────────────────────────────────────────
+// ─── Task 1.5: Backend Integration Coverage ──────────────────────────────────
+function runBackendIntegrationCoverage() {
+  console.log(`\n${bold("[ Backend Integration Coverage ]")}`);
+  const result = run(
+    "npm run test:integration:coverage",
+    path.join(ROOT, "backend"),
+    "backend integration tests",
+  );
+
+  const summaryPath = path.join(
+    ROOT,
+    "backend/coverage-integration/coverage-summary.json",
+  );
+  if (!fs.existsSync(summaryPath)) {
+    const report = {
+      error: "coverage-summary.json not generated",
+      passed: false,
+    };
+    fs.writeFileSync(
+      path.join(REPORTS_DIR, "backend-integration-coverage.json"),
+      JSON.stringify(report, null, 2),
+    );
+    console.log(
+      `  ${fail("Could not read backend integration coverage data")}`,
+    );
+    return report;
+  }
+
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
+  } catch (e) {
+    const report = {
+      error: `Failed to parse backend integration coverage: ${e.message}`,
+      passed: false,
+    };
+    fs.writeFileSync(
+      path.join(REPORTS_DIR, "backend-integration-coverage.json"),
+      JSON.stringify(report, null, 2),
+    );
+    console.log(
+      `  ${fail("Failed to parse backend integration coverage data")}`,
+    );
+    return report;
+  }
+  const total = raw.total;
+  if (!total) {
+    const report = {
+      error: "Invalid coverage data: missing total",
+      passed: false,
+    };
+    fs.writeFileSync(
+      path.join(REPORTS_DIR, "backend-integration-coverage.json"),
+      JSON.stringify(report, null, 2),
+    );
+    console.log(
+      `  ${fail("Invalid backend integration coverage data structure")}`,
+    );
+    return report;
+  }
+
+  const metrics = {
+    lines: total.lines?.pct === "Unknown" ? 0 : (total.lines?.pct ?? 0),
+    statements:
+      total.statements?.pct === "Unknown" ? 0 : (total.statements?.pct ?? 0),
+    functions:
+      total.functions?.pct === "Unknown" ? 0 : (total.functions?.pct ?? 0),
+    branches:
+      total.branches?.pct === "Unknown" ? 0 : (total.branches?.pct ?? 0),
+  };
+
+  const belowThreshold = Object.entries(metrics)
+    .filter(([, pct]) => pct < COVERAGE_THRESHOLD)
+    .map(([k, pct]) => `${k}: ${pct}%`);
+
+  const report = {
+    timestamp: new Date().toISOString(),
+    tool: "vitest + @vitest/coverage-v8",
+    threshold: COVERAGE_THRESHOLD,
+    passed: belowThreshold.length === 0 && result.ok,
+    summary: {
+      lines: metrics.lines,
+      statements: metrics.statements,
+      functions: metrics.functions,
+      branches: metrics.branches,
+    },
+    testResult: {
+      exitCode: result.status,
+      testsPass: result.ok,
+    },
+    belowThreshold,
+    files: Object.entries(raw)
+      .filter(([k]) => k !== "total")
+      .map(([file, data]) => ({
+        file: file.replace(ROOT + "/", ""),
+        lines: data.lines?.pct ?? null,
+        statements: data.statements?.pct ?? null,
+        functions: data.functions?.pct ?? null,
+        branches: data.branches?.pct ?? null,
+      })),
+  };
+
+  fs.writeFileSync(
+    path.join(REPORTS_DIR, "backend-integration-coverage.json"),
+    JSON.stringify(report, null, 2),
+  );
+
+  if (report.passed) {
+    console.log(
+      `  ${pass(`Backend integration coverage: lines ${metrics.lines}%, branches ${metrics.branches}% (≥${COVERAGE_THRESHOLD}% ✓)`)}`,
+    );
+  } else {
+    belowThreshold.forEach((b) =>
+      console.log(`  ${fail(`Below threshold: ${b}`)}`),
+    );
+    if (!result.ok)
+      console.log(`  ${warn("Integration test failures detected")}`);
+  }
+
+  return report;
+}
+
+// ─── Task 1: Backend Unit Coverage ────────────────────────────────────────────────
 function runBackendCoverage() {
   console.log(`\n${bold("[ Backend Coverage ]")}`);
   const result = run("npm test", path.join(ROOT, "backend"), "backend tests");
@@ -554,6 +676,7 @@ function runAccessibilityAudit() {
 // ─── Task 6: Aggregate Report ─────────────────────────────────────────────────
 function generateQualityReport(
   backend,
+  backendIntegration,
   frontend,
   e2e,
   security,
@@ -563,6 +686,7 @@ function generateQualityReport(
 
   const allPassed =
     backend.passed &&
+    backendIntegration.passed &&
     frontend.passed &&
     e2e.passed &&
     security.passed &&
@@ -577,6 +701,11 @@ function generateQualityReport(
         passed: backend.passed,
         lines: backend.summary?.lines,
         branches: backend.summary?.branches,
+      },
+      backendIntegrationCoverage: {
+        passed: backendIntegration.passed,
+        lines: backendIntegration.summary?.lines,
+        branches: backendIntegration.summary?.branches,
       },
       frontendCoverage: {
         passed: frontend.passed,
@@ -602,6 +731,8 @@ function generateQualityReport(
     },
     reports: {
       backendCoverage: "_bmad-output/qa-reports/backend-coverage.json",
+      backendIntegrationCoverage:
+        "_bmad-output/qa-reports/backend-integration-coverage.json",
       frontendCoverage: "_bmad-output/qa-reports/frontend-coverage.json",
       e2eTests: "_bmad-output/qa-reports/e2e-test-report.json",
       security: "_bmad-output/qa-reports/security-audit.json",
@@ -634,8 +765,12 @@ function printSummary(report) {
         : `${RED}FAIL${RESET}`;
 
   console.log(
-    `  Backend Coverage   [${checkMark(summary.backendCoverage.passed)}]  ` +
+    `  Backend Unit Cov   [${checkMark(summary.backendCoverage.passed)}]  ` +
       `lines: ${summary.backendCoverage.lines ?? "N/A"}% | branches: ${summary.backendCoverage.branches ?? "N/A"}%`,
+  );
+  console.log(
+    `  Backend Int Cov    [${checkMark(summary.backendIntegrationCoverage.passed)}]  ` +
+      `lines: ${summary.backendIntegrationCoverage.lines ?? "N/A"}% | branches: ${summary.backendIntegrationCoverage.branches ?? "N/A"}%`,
   );
   console.log(
     `  Frontend Coverage  [${checkMark(summary.frontendCoverage.passed)}]  ` +
@@ -684,6 +819,7 @@ async function main() {
 
   ensureReportsDir();
 
+  const backendIntegration = runBackendIntegrationCoverage();
   const backend = runBackendCoverage();
   const frontend = runFrontendCoverage();
   const e2e = parseE2EReport();
@@ -692,6 +828,7 @@ async function main() {
 
   const report = generateQualityReport(
     backend,
+    backendIntegration,
     frontend,
     e2e,
     security,

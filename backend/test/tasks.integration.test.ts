@@ -93,6 +93,45 @@ describe("Tasks API - Integration Tests", () => {
 
       expect(result).toBeNull();
     });
+
+    it("skips DB update if body is empty (null changes) but task exists", async () => {
+      const task = await seedTask(app, "Empty patch test");
+
+      const response = await app.inject({
+        method: "PATCH",
+        url: `/tasks/${task.id}`,
+        payload: {},
+      });
+
+      expect(response.statusCode).toBe(200);
+      const parsed = JSON.parse(response.payload);
+      expect(parsed.data.id).toBe(task.id);
+      expect(parsed.data.title).toBe("Empty patch test");
+    });
+
+    it("returns 404 if body is empty (null changes) and task does not exist", async () => {
+      const response = await app.inject({
+        method: "PATCH",
+        url: `/tasks/99999`,
+        payload: {},
+      });
+
+      expect(response.statusCode).toBe(404);
+    });
+
+    it("handles database exceptions during update gracefully", async () => {
+      // Intentionally close the DB to trigger an exception
+      await testDb.close();
+
+      const response = await app.inject({
+        method: "PATCH",
+        url: "/tasks/1",
+        payload: { title: "Valid title" },
+      });
+
+      expect(response.statusCode).toBe(500);
+      expect(JSON.parse(response.payload).error.code).toBe("DB_ERROR");
+    });
   });
 
   describe("DELETE /tasks/:id", () => {
@@ -110,6 +149,19 @@ describe("Tasks API - Integration Tests", () => {
       const deleted = await deleteTask(app, 99999);
 
       expect(deleted).toBeNull();
+    });
+
+    it("handles database exceptions during delete gracefully", async () => {
+      // Intentionally close the DB to trigger an exception
+      await testDb.close();
+
+      const response = await app.inject({
+        method: "DELETE",
+        url: "/tasks/1",
+      });
+
+      expect(response.statusCode).toBe(500);
+      expect(JSON.parse(response.payload).error.code).toBe("DB_ERROR");
     });
   });
 

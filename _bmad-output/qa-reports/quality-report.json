@@ -1,18 +1,22 @@
 {
-  "timestamp": "2026-04-29T13:48:01.189Z",
+  "timestamp": "2026-04-30T07:58:59.959Z",
   "project": "bmad-todo",
-  "overallPassed": false,
+  "overallPassed": true,
   "summary": {
     "backendCoverage": {
       "passed": true,
-      "lines": 87.07,
-      "branches": 74.35
+      "lines": 87.73,
+      "branches": 70.73
+    },
+    "backendIntegrationCoverage": {
+      "passed": true,
+      "lines": 85.08,
+      "branches": 72.97
     },
     "frontendCoverage": {
-      "passed": false,
-      "lines": 2.27,
-      "branches": 2.08,
-      "note": "App.tsx lacks unit tests; coverage reflects only tested components (Toaster). See docs/test-plan for expansion roadmap."
+      "passed": true,
+      "lines": 97.24,
+      "branches": 81.37
     },
     "e2eTests": {
       "passed": true,
@@ -31,6 +35,7 @@
   },
   "reports": {
     "backendCoverage": "_bmad-output/qa-reports/backend-coverage.json",
+    "backendIntegrationCoverage": "_bmad-output/qa-reports/backend-integration-coverage.json",
     "frontendCoverage": "_bmad-output/qa-reports/frontend-coverage.json",
     "e2eTests": "_bmad-output/qa-reports/e2e-test-report.json",
     "security": "_bmad-output/qa-reports/security-audit.json",
