@@ -118,3 +118,31 @@ See [`_bmad-output/qa-reports/README.md`](_bmad-output/qa-reports/README.md) for
 cd frontend && npm test          # run tests
 cd frontend && npm run test:coverage  # run with coverage
 ```
+
+## BMAD Method & AI Experience
+
+This project was built following the [BMAD](https://github.com/bmadcode/bmad-method) methodology, using GitHub Copilot inside VS Code. Here are my reflections on the process.
+
+### Agent Usage
+
+I primarily alternated between Claude Sonnet 4.6 and Gemini 2.5 Pro. Both performed well on code writing and review with no significant differences. For documentation, I leaned on Gemini 2.5 Pro and Copilot's auto mode — Gemini handled context better there, maintaining a clearer vision of the overall document structure. I also delegated one full user story to auto mode; that was the lowest-quality output, requiring the most human intervention.
+
+### MCP Server Usage
+
+No MCP servers were used in this project.
+
+### Test Generation
+
+Test generation was generally excellent. At one point — likely due to auto mode losing context — the AI produced two nearly identical test suites instead of consolidating them. A different model or closer human oversight would probably have caught that duplication earlier.
+
+### Debugging with AI
+
+The AI handled development and debugging autonomously throughout the project. When issues arose, it identified and resolved them without requiring manual intervention.
+
+### Limitations Encountered
+
+Human guidance remains necessary to prevent the AI from going in circles or producing redundant work. A more thorough upfront review of the generated documentation would likely have improved overall quality.
+
+The BMAD approach is notably verbose: the bulk of the effort went into generating planning and documentation artifacts rather than writing application code. For a simple todo app this felt heavy — it is hard to imagine the overhead for a genuinely complex application.
+
+By comparison, I found [spec-kit](https://github.com/speckit) in another personal project to be far more satisfying and immediate, delivering equally solid results with considerably less ceremony.
